@@ -25,9 +25,8 @@ Le cash et la valeur du portefeuille sont recalculés à partir de la table `pos
 1. Pousser le projet sur GitHub, puis l'importer dans Vercel.
 2. Vercel > projet > **Storage** > créer une base **Neon** et la lier au projet (ajoute `DATABASE_URL`).
 3. Vercel > **Settings > Environment Variables** : ajouter `CRON_SECRET` (générer avec `openssl rand -hex 32`).
-4. En local : `bunx vercel link` puis `bunx vercel env pull .env.local`, puis `bun run db:push` pour créer les tables.
-5. Redéployer.
-6. Sur [cron-job.org](https://cron-job.org) : créer un job
+4. Redéployer : le build applique les migrations de `drizzle/` (`drizzle-kit migrate`), donc les tables sont créées automatiquement.
+5. Sur [cron-job.org](https://cron-job.org) : créer un job
    - URL : `https://<ton-projet>.vercel.app/api/tick`
    - Planification : toutes les 15 minutes
    - Header : `Authorization: Bearer <CRON_SECRET>`
@@ -38,5 +37,6 @@ Le cash et la valeur du portefeuille sont recalculés à partir de la table `pos
 bun install
 bun dev         # dashboard sur http://localhost:3000
 bun test        # tests de la stratégie
+bun run db:generate   # après une modif de src/db/schema.ts : crée la migration à commiter
 curl -H "Authorization: Bearer $CRON_SECRET" localhost:3000/api/tick   # lancer un tick à la main
 ```
